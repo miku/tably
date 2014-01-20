@@ -76,7 +76,7 @@ func main() {
         // log.Println(params)
         mapping := FincMapping{}
         err = db.Get(&mapping, `SELECT finc_id, record_id, source_id 
-							    FROM finc_mapping WHERE finc_id = ?`, params["fid"])
+                                FROM finc_mapping WHERE finc_id = ?`, params["fid"])
         if err != nil {
             r.JSON(404, map[string]interface{}{"error": fmt.Sprintf("%s", err)})
         } else {
