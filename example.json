@@ -1,0 +1,4 @@
+{
+	"vendor": "mysql",
+	"dsn": "user:passwd@tcp(ip:port)/db"
+}
