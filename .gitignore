@@ -2,3 +2,4 @@ Vagrantfile
 .vagrant
 server
 server.json
+deps.lock

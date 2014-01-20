@@ -1,14 +1,12 @@
 package main
 
 import (
-    // "database/sql"
+    "encoding/json"
     "fmt"
     "github.com/codegangsta/martini"
     "github.com/codegangsta/martini-contrib/render"
     _ "github.com/go-sql-driver/mysql"
     "github.com/jmoiron/sqlx"
-    // _ "github.com/mattn/go-sqlite3"
-    "encoding/json"
     "os"
     "time"
 )
