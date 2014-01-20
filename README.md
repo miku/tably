@@ -16,4 +16,4 @@ Develop
 
 Adjust `example.json` configuration and rename it to `server.json`.
 
-Go to http://localhost:3000 --
+Go to [http://localhost:3000](http://localhost:3000).
