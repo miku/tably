@@ -12,5 +12,7 @@ deps.lock:
 clean-deps:
 	rm -f deps.lock
 
+clean-all: clean-deps clean
+
 clean:
 	rm -f server
