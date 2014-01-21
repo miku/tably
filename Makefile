@@ -7,6 +7,7 @@ deps.lock:
 	go get github.com/codegangsta/martini-contrib/render
 	go get github.com/go-sql-driver/mysql
 	go get github.com/jmoiron/sqlx
+	go get github.com/mattn/go-sqlite3
 	touch deps.lock # remove this to redownload deps
 
 clean-deps:

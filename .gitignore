@@ -3,3 +3,4 @@ Vagrantfile
 server
 server.json
 deps.lock
+*.db

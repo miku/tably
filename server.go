@@ -7,8 +7,9 @@ import (
     "github.com/codegangsta/martini-contrib/render"
     _ "github.com/go-sql-driver/mysql"
     "github.com/jmoiron/sqlx"
+    _ "github.com/mattn/go-sqlite3"
+    "log"
     "os"
-    "time"
 )
 
 type FincMapping struct {
@@ -22,6 +23,28 @@ type Configuration struct {
     DSN    string `json:"dsn"`
 }
 
+type Similarity struct {
+    Left     int64   `db:"fid1"`
+    Right    int64   `db:"fid2"`
+    Title    float64 `db:"title"`
+    Subtitle float64 `db:"sub"`
+    Combined float64 `db:"combined"`
+    Authors  float64 `db:"authors"`
+}
+
+type Entry struct {
+    Id      string
+    Title   string
+    Authors string
+    URL     string
+}
+
+type Pair struct {
+    Left         Entry
+    Rigth        Entry
+    Similarities Similarity
+}
+
 func main() {
 
     // load configuration on startup
@@ -32,6 +55,7 @@ func main() {
 
     m := martini.Classic()
     m.Map(configuration)
+    m.Use(martini.Static("assets"))
     m.Use(render.Renderer(render.Options{
         Directory:  "templates",
         Layout:     "layout",
@@ -39,22 +63,28 @@ func main() {
         Charset:    "UTF-8",
     }))
 
-    m.Get("/", func() string {
-        return fmt.Sprintf("Hello world! (%s)", time.Now())
+    // show the list
+    m.Get("/", func(r render.Render) {
+        // access the sim db here to build up a list of `Pairs`
+        db, err := sqlx.Open("sqlite3", "./test.db")
+        if err != nil {
+            log.Fatal(err)
+        }
+        defer db.Close()
+        log.Println(db)
+
+        sims := []Similarity{}
+        err = db.Select(&sims, `SELECT fid1, fid2, title, sub, combined, authors 
+                                FROM similarity ORDER BY fid1`)
+
+        log.Println(len(sims))
+        vars := make(map[string]interface{})
+        vars["name"] = "martin"
+        vars["sims"] = sims
+        r.HTML(200, "list", vars)
     })
 
-    m.Get("/hello/:name", func(params martini.Params) string {
-        return "Hello " + params["name"]
-    })
-
-    m.Get("/test", func(r render.Render) {
-        r.HTML(200, "hello", "jeremy")
-    })
-
-    m.Get("/api", func(r render.Render) {
-        r.JSON(200, map[string]interface{}{"hello": "world"})
-    })
-
+    // testing mysql access
     m.Get("/fid/:fid", func(params martini.Params, r render.Render, c *Configuration) {
         db, err := sqlx.Open(c.Vendor, c.DSN)
         if err != nil {
