@@ -31,8 +31,7 @@ func main() {
     decoder.Decode(&configuration)
 
     m := martini.Classic()
-    // m.Map(configuration)
-
+    m.Map(configuration)
     m.Use(render.Renderer(render.Options{
         Directory:  "templates",
         Layout:     "layout",
@@ -56,9 +55,8 @@ func main() {
         r.JSON(200, map[string]interface{}{"hello": "world"})
     })
 
-    m.Get("/fid/:fid", func(params martini.Params, r render.Render) {
-        // TODO, ping first
-        db, err := sqlx.Open(configuration.Vendor, configuration.DSN)
+    m.Get("/fid/:fid", func(params martini.Params, r render.Render, c *Configuration) {
+        db, err := sqlx.Open(c.Vendor, c.DSN)
         if err != nil {
             r.JSON(500, map[string]interface{}{"error": fmt.Sprintf("%s", err)})
             return
