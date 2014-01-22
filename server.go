@@ -75,7 +75,7 @@ func main() {
 
         sims := []Similarity{}
         err = db.Select(&sims, `SELECT fid1, fid2, title, sub, combined, authors 
-                                FROM similarity ORDER BY fid1`)
+                                FROM similarity ORDER BY fid1 LIMIT 1000`)
 
         log.Println(len(sims))
         vars := make(map[string]interface{})
