@@ -9,7 +9,11 @@ import (
     "github.com/jmoiron/sqlx"
     _ "github.com/mattn/go-sqlite3"
     "log"
+    "math"
+    "net/http"
     "os"
+    "strconv"
+    "strings"
 )
 
 type FincMapping struct {
@@ -33,10 +37,15 @@ type Similarity struct {
 }
 
 type Entry struct {
-    Id      string
-    Title   string
-    Authors string
-    URL     string
+    FincId      int64  `db:"finc_id"`
+    RecordId    string `db:"record_id"`
+    SourceId    int64  `db:"source_id"`
+    YearControl string `db:"yearctrl"`
+    YearData    string `db:"yeardata"`
+    Title       string `db:"combined"`
+    Authors     string `db:"authors"`
+    Edition     string `db:"edition"`
+    Isbns       string `db:"isbns"`
 }
 
 type Pair struct {
@@ -54,6 +63,7 @@ func main() {
     decoder.Decode(&configuration)
 
     m := martini.Classic()
+
     m.Map(configuration)
     m.Use(martini.Static("assets"))
     m.Use(render.Renderer(render.Options{
@@ -63,24 +73,68 @@ func main() {
         Charset:    "UTF-8",
     }))
 
-    // show the list
+    m.Get("/s/:sim", func(r render.Render, params martini.Params) {
+
+        db, err := sqlx.Open("sqlite3", "./test.db")
+        if err != nil {
+            log.Fatal(err)
+        }
+        defer db.Close()
+        var entries []Entry
+        ids := strings.Split(params["sim"], "-")
+        for _, id := range ids {
+            entry := Entry{}
+            err = db.Get(&entry, `SELECT finc_id, record_id, source_id,
+                                yearctrl, yeardata, combined,
+                                authors, edition, isbns
+                                FROM item WHERE finc_id = ?`, id)
+            if err != nil {
+                log.Fatal(err)
+            }
+            log.Println(entry)
+            entries = append(entries, entry)
+        }
+        r.HTML(200, "details", entries)
+    })
+
     m.Get("/", func(r render.Render) {
+        r.Redirect("/o/0")
+    })
+
+    m.Get("/o", func(r render.Render) {
+        r.Redirect("/o/0")
+    })
+
+    // show the list
+    m.Get("/o/:o", func(r render.Render, params martini.Params) {
         // access the sim db here to build up a list of `Pairs`
         db, err := sqlx.Open("sqlite3", "./test.db")
         if err != nil {
             log.Fatal(err)
         }
         defer db.Close()
-        log.Println(db)
+
+        offset := 0
+        if val, ok := params["o"]; ok {
+            offset, _ = strconv.Atoi(val)
+        }
 
         sims := []Similarity{}
         err = db.Select(&sims, `SELECT fid1, fid2, title, sub, combined, authors 
-                                FROM similarity ORDER BY fid1 LIMIT 1000`)
+                                FROM similarity ORDER BY fid1 LIMIT 1000 OFFSET ?`, offset)
 
-        log.Println(len(sims))
+        total := 0
+        row := db.QueryRow(`SELECT count(*) FROM similarity`)
+        row.Scan(&total)
+
         vars := make(map[string]interface{})
-        vars["name"] = "martin"
+
+        vars["total"] = total
         vars["sims"] = sims
+        vars["offset"] = offset
+        vars["previous"] = math.Max(0.0, float64(offset-1000))
+        vars["next"] = math.Min(float64(offset+1000), float64(total-1000))
+        vars["last"] = float64(total - 1000)
         r.HTML(200, "list", vars)
     })
 
@@ -110,5 +164,6 @@ func main() {
         }
     })
 
-    m.Run()
+    http.ListenAndServe("139.18.19.111:3000", m)
+    // m.Run()
 }

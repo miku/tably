@@ -1,0 +1,44 @@
+<div class="grid grid-pad">
+    <div class="col-1-2">
+        <div class="content">
+            {{ with index . 0 }}  
+            <p>
+                <a href='https://katalog.ub.uni-leipzig.de/Record/{{printf "%010d" .FincId}}'>{{ .FincId }}</a> | 
+                <a href="https://katalog.ub.uni-leipzig.de/Search/Results?lookfor=source_id:{{.SourceId}}">
+                {{ .SourceId}}</a> | 
+                <a href="https://katalog.ub.uni-leipzig.de/Search/Results?lookfor=record_id:{{.RecordId}}">
+                {{ .RecordId}}</a>
+            </p>
+            <h3>{{ .Title }}</h3>
+            <table>
+                <tr><td>Authors (100.a, 700.a)</td><td>{{ .Authors}}</td></tr>
+                <tr><td>Year (008)</td><td>{{ .YearControl}}<td></tr>
+                <tr><td>Year (260.c)</td><td>{{ .YearData}}</td></tr>
+                <tr><td>Edition</td><td>{{ .Edition}}</td></tr>
+                <tr><td>ISBNS</td><td>{{ .Isbns}}</td></tr>
+            </table>
+            {{ end }}
+        </div>
+    </div>
+    <div class="col-1-2">
+        <div class="content">
+            {{ with index . 1 }}  
+            <p>
+                <a href='https://katalog.ub.uni-leipzig.de/Record/{{printf "%010d" .FincId}}'>{{ .FincId }}</a> | 
+                <a href="https://katalog.ub.uni-leipzig.de/Search/Results?lookfor=source_id:{{.SourceId}}">
+                {{ .SourceId}}</a> | 
+                <a href="https://katalog.ub.uni-leipzig.de/Search/Results?lookfor=record_id:{{.RecordId}}">
+                {{ .RecordId}}</a>
+            </p>
+            <h3>{{ .Title }}</h3>
+            <table>
+                <tr><td>Authors (100.a, 700.a)</td><td>{{ .Authors}}</td></tr>
+                <tr><td>Year (008)</td><td>{{ .YearControl}}<td></tr>
+                <tr><td>Year (260.c)</td><td>{{ .YearData}}</td></tr>
+                <tr><td>Edition</td><td>{{ .Edition}}</td></tr>
+                <tr><td>ISBNS</td><td>{{ .Isbns}}</td></tr>
+            </table>
+            {{ end }}
+        </div>
+    </div>
+</div>
