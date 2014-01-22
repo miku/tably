@@ -1,7 +1,7 @@
 <div class="grid grid-pad">
     <div class="col-1-2">
         <div class="content">
-            {{ with index . 0 }}  
+            {{ with index . 0 }}
             <p>
                 <a href='https://katalog.ub.uni-leipzig.de/Record/{{printf "%010d" .FincId}}'>{{ .FincId }}</a> | 
                 <a href="https://katalog.ub.uni-leipzig.de/Search/Results?lookfor=source_id:{{.SourceId}}">
@@ -22,7 +22,7 @@
     </div>
     <div class="col-1-2">
         <div class="content">
-            {{ with index . 1 }}  
+            {{ with index . 1 }}
             <p>
                 <a href='https://katalog.ub.uni-leipzig.de/Record/{{printf "%010d" .FincId}}'>{{ .FincId }}</a> | 
                 <a href="https://katalog.ub.uni-leipzig.de/Search/Results?lookfor=source_id:{{.SourceId}}">

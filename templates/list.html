@@ -5,20 +5,20 @@
             <p>{{.total}} similarities found (o={{.offset}})</p>
             <p><a href="/o/0">first</a> | <a href="/o/{{.previous}}">previous</a> | <a href="/o/{{.next}}">next</a> | <a href="/o/{{.last}}">last</a></p>
             <table cellpadding="5">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Finc ID</th>
-                  <th>Finc ID</th>
-                  <th>Title</th>
-                  <th>Subtitle</th>
-                  <th>Combined</th>
-                  <th>Authors</th>
-                  <th>Yes, valid</th>
-                  <th>No, invalid</th>
-                </tr>
-              </thead>                
-            {{range .sims}}
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Finc ID</th>
+                        <th>Finc ID</th>
+                        <th>Title</th>
+                        <th>Subtitle</th>
+                        <th>Combined</th>
+                        <th>Authors</th>
+                        <th>Yes, valid</th>
+                        <th>No, invalid</th>
+                    </tr>
+                </thead>
+                {{range .sims}}
                 <tr id="{{.Left}}-{{.Right}}">
                     <td><a href="http://139.18.19.111:3000/s/{{.Left}}-{{.Right}}">Details</a></td>
                     <td><a href='https://katalog.ub.uni-leipzig.de/Record/{{printf "%010d" .Left}}'>{{.Left}}</a></td>
@@ -30,8 +30,9 @@
                     <td><span class="vote"><a class="plus" href="#">+1</a></span></td>
                     <td><span class="vote"><a class="minus" href="#">-1</span></td>
                 </tr>
-            {{end}}
+                {{end}}
             </table>
+            <p><a href="/o/0">first</a> | <a href="/o/{{.previous}}">previous</a> | <a href="/o/{{.next}}">next</a> | <a href="/o/{{.last}}">last</a></p>
         </div>
     </div>
 </div>
